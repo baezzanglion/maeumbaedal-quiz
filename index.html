@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FCEEE3">
+<title>마니또 추리 대회 · 마음배달</title>
+<style>
+  :root{
+    --coral:#E8503A; --coral-soft:#F27860; --coral-ink:#C23A26;
+    --sponge:#F4C430; --sponge-deep:#E6A50E;
+    --cream:#FDF6EC; --paper:#FFFBF3; --peach:#FCE7DA;
+    --brown:#8B5E3C; --brown-soft:#B5875E;
+    --ink:#3D2B1F; --ink-soft:#6E5A48; --line:#EADFCF;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Apple SD Gothic Neo","Malgun Gothic","Pretendard",system-ui,sans-serif;
+    color:var(--ink); margin:0; min-height:100vh;
+    padding:22px 14px calc(90px + env(safe-area-inset-bottom));
+    background:radial-gradient(120% 80% at 80% 0%, #FCEEE3 0%, var(--peach) 42%, var(--cream) 100%);
+  }
+  .wrap{max-width:540px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:7px;justify-content:center;margin-bottom:4px}
+  .logo{font-weight:900;font-size:12.5px;letter-spacing:.02em;color:#fff;background:var(--coral);
+    padding:4px 11px;border-radius:999px;box-shadow:0 3px 8px rgba(232,80,58,.3)}
+  h1{font-size:23px;text-align:center;margin:12px 0 5px;letter-spacing:-.01em}
+  .sub{text-align:center;color:var(--ink-soft);font-size:13px;margin:0 auto 18px;line-height:1.65;max-width:420px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:20px;
+    padding:18px 16px;box-shadow:0 10px 26px rgba(139,94,60,.10);margin-bottom:14px}
+  .card h2{font-size:15.5px;margin:0 0 4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+  .card .hint{font-size:12.5px;color:var(--ink-soft);margin:0 0 12px;line-height:1.6}
+  label.field{display:block;margin-bottom:13px}
+  label.field:last-child{margin-bottom:0}
+  .who{font-size:13.5px;font-weight:700;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .who .dot{width:22px;height:22px;border-radius:50%;background:var(--sponge);color:#6b4e00;
+    font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  select{
+    width:100%;font-size:16px;font-family:inherit;color:var(--ink);
+    background-color:var(--cream);border:1.5px solid var(--line);border-radius:14px;
+    padding:13px 40px 13px 14px;appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%23C23A26' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;background-size:12px 8px;
+  }
+  select:focus{outline:none;border-color:var(--coral-soft);box-shadow:0 0 0 3px rgba(242,120,96,.18)}
+  select.filled{border-color:var(--sponge-deep);background-color:#FFFDF6}
+  .me-select{border-color:var(--coral-soft);font-weight:700}
+  input.text,textarea{
+    width:100%;font-size:16px;font-family:inherit;color:var(--ink);
+    background-color:var(--cream);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;
+  }
+  textarea{line-height:1.75;resize:vertical;min-height:158px}
+  input.text:focus,textarea:focus{outline:none;border-color:var(--coral-soft);box-shadow:0 0 0 3px rgba(242,120,96,.18)}
+  .btn{display:block;width:100%;background:var(--coral);color:#fff;font-weight:800;font-size:16px;
+    font-family:inherit;border:none;border-radius:16px;padding:15px;cursor:pointer;
+    box-shadow:0 8px 20px rgba(232,80,58,.28)}
+  .btn:active{transform:translateY(1px)}
+  .btn[disabled]{opacity:.55;box-shadow:none;cursor:default}
+  .btn.ghost{background:transparent;color:var(--coral-ink);border:1.5px solid #F3CFC6;box-shadow:none}
+  .btnrow{display:flex;gap:10px}
+  .btnrow .btn{padding:13px 10px;font-size:14px}
+  .note{font-size:12px;color:var(--ink-soft);background:#FBF0E6;border:1px dashed #E7C9B4;
+    border-radius:12px;padding:10px 12px;line-height:1.65}
+  .sticky{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5}
+  .roomtag{text-align:center;margin:-2px 0 16px}
+  .chip{display:inline-block;background:var(--peach);color:var(--coral-ink);font-size:12.5px;
+    font-weight:700;border-radius:999px;padding:5px 11px;margin:0 6px 6px 0}
+  .toast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%);
+    background:var(--ink);color:#fff;font-size:13px;font-weight:700;padding:11px 18px;border-radius:999px;
+    box-shadow:0 10px 24px rgba(0,0,0,.25);opacity:0;transition:opacity .25s;pointer-events:none;z-index:50;max-width:88vw;text-align:center}
+  .toast.show{opacity:1}
+  .done{text-align:center;padding:24px 16px}
+  .done .big{font-size:44px;line-height:1}
+  .rank{display:flex;align-items:center;gap:13px;background:var(--cream);border:1px solid var(--line);
+    border-radius:16px;padding:13px 15px;margin-bottom:9px}
+  .rank.win{background:linear-gradient(180deg,#FFF7DE,#FFF0C2);border-color:var(--sponge-deep);
+    box-shadow:0 8px 20px rgba(230,165,14,.22)}
+  .rank .pos{font-size:19px;font-weight:900;min-width:30px;text-align:center;color:var(--coral-ink)}
+  .rank .nm{font-size:17px;font-weight:800;flex:1}
+  .rank .sc{font-size:14px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  .rank .sc b{font-size:22px;color:var(--coral)}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* =========================================================
+   마니또 추리 대회 — 방(room)별 앱. 참가자 명단은 각 조 운영자가 ?admin=1 에서 등록.
+   · 참가자 화면 : ?room=<방키>            (명단 미등록이면 "준비 중" 안내)
+   · 운영자 화면 : ?room=<방키>&admin=1     (명단 등록 + 정답 입력·채점)
+   · 현황 화면   : ?room=<방키>&status=1
+   정답(실제 배정표)은 서버에 저장되지 않고, 운영자 브라우저에서만 채점됩니다.
+
+   [우리 조 참고용] 닉네임=실명 (운영자만): 배짱=박종배 · 솔라=손수정 · 레미=최주희
+   · 찌니=신진영 · 에밀리아=최혜정 · 세계로=진혜정 · 끼리=김용수
+   · 밤비선장=성대제 · 딜런=조종훈 · 쎄이=이보미 · 망고=윤민영 · 위버=박세미
+   ========================================================= */
+
+const app = document.getElementById('app');
+const $ = (s, el=document)=>el.querySelector(s);
+const params = new URLSearchParams(location.search);
+const MODE = params.get('admin') ? 'admin' : (params.get('status') ? 'status' : 'submit');
+const ROOM = ((params.get('room')||'jo1').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,32)) || 'jo1';
+
+let PEOPLE = [];      // 방의 참가자 명단 (roster 에서 로드)
+let ROOM_NAME = '';   // 조 이름 (선택)
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function toast(msg){
+  let t=$('.toast');
+  if(!t){ t=document.createElement('div'); t.className='toast'; document.body.appendChild(t); }
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2400);
+}
+async function copyText(txt){
+  try{ await navigator.clipboard.writeText(txt); toast('링크를 복사했어요 📋'); return; }catch(e){}
+  const ta=document.createElement('textarea'); ta.value=txt;
+  ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('링크를 복사했어요 📋'); }
+  catch(_){ toast('복사에 실패했어요 — 주소창의 링크를 길게 눌러 복사해주세요'); }
+  document.body.removeChild(ta);
+}
+function participantURL(){ return `${location.origin}${location.pathname}?room=${encodeURIComponent(ROOM)}`; }
+function adminURL(){ return `${location.origin}${location.pathname}?room=${encodeURIComponent(ROOM)}&admin=1`; }
+function roomChip(){
+  const label = ROOM_NAME ? esc(ROOM_NAME) : `방 · ${esc(ROOM)}`;
+  const count = PEOPLE.length ? ` · ${PEOPLE.length}명` : '';
+  return `<div class="roomtag"><span class="chip">🏷️ ${label}${count}</span></div>`;
+}
+function optionsFor(exclude){
+  let h='<option value="">고르기…</option>';
+  for(const p of PEOPLE){ if(p===exclude) continue; h+=`<option value="${esc(p)}">${esc(p)}</option>`; }
+  return h;
+}
+function wireFilled(scope){
+  scope.querySelectorAll('select').forEach(s=>{
+    s.classList.toggle('filled', !!s.value);
+    s.addEventListener('change',()=>s.classList.toggle('filled', !!s.value));
+  });
+}
+
+/* ---------------- 0) 로딩 / 준비 중 ---------------- */
+function renderLoading(){
+  app.innerHTML = `<div class="card done"><div class="big">⏳</div><p class="sub" style="margin:12px 0 0">불러오는 중…</p></div>`;
+}
+function renderNotReady(){
+  app.innerHTML = `
+    <div class="brand"><span class="logo">마음배달</span></div>
+    <h1>아직 준비 중이에요 🛠️</h1>
+    ${roomChip()}
+    <div class="card done">
+      <div class="big">📭</div>
+      <p class="sub" style="margin:12px 0 4px">이 방의 <b>참가자 명단</b>이 아직 등록되지 않았어요.</p>
+      <p class="sub" style="margin:0">운영자가 명단을 등록하면 바로 예측을 제출할 수 있어요.</p>
+    </div>
+    <p class="note">운영자라면 아래 버튼으로 들어가 <b>참가자 명단</b>을 먼저 등록해 주세요.</p>
+    <div class="sticky" style="margin-top:12px"><button class="btn" id="toAdmin">운영자 화면으로 🔒</button></div>
+  `;
+  $('#toAdmin').addEventListener('click', ()=>{ location.href = adminURL(); });
+}
+
+/* ---------------- 1) 참가자 예측 제출 ---------------- */
+function renderSubmit(){
+  const rows = PEOPLE.map((p,i)=>`
+    <label class="field">
+      <span class="who"><span class="dot">${i+1}</span>${esc(p)} 님의 우체부는?</span>
+      <select data-person="${esc(p)}">${optionsFor(p)}</select>
+    </label>`).join('');
+  app.innerHTML = `
+    <div class="brand"><span class="logo">마음배달</span></div>
+    <h1>마니또 추리 대회 🕵️</h1>
+    ${roomChip()}
+    <p class="sub">누가 누구의 <b>우체부</b>였을까요?<br>내 예측을 제출하고 발표 때 정답을 맞혀봐요!</p>
+
+    <div class="card">
+      <h2>🙋 나는 누구예요?</h2>
+      <p class="hint">먼저 본인 이름을 골라주세요. (다시 제출하면 마지막 제출로 갱신돼요)</p>
+      <select id="me" class="me-select">
+        <option value="">이름 선택…</option>
+        ${PEOPLE.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('')}
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>🔮 나의 예측</h2>
+      <p class="hint">${PEOPLE.length}명 각각의 우체부를 추리해 보세요. 본인은 자기 우체부가 될 수 없어요.</p>
+      ${rows}
+    </div>
+
+    <div class="sticky"><button class="btn" id="submitBtn">예측 제출하기 ✨</button></div>
+    <p class="note" style="margin-top:12px">🤫 제출한 예측은 저장되지만 <b>정답은 발표 때까지 어디에도 저장되지 않아요.</b> 운영자가 발표 당일 정답을 넣는 순간에만 채점돼요.</p>
+  `;
+  wireFilled(app);
+  $('#submitBtn').addEventListener('click', submitPrediction);
+}
+
+async function submitPrediction(){
+  const me = $('#me').value;
+  if(!me){ toast('먼저 본인 이름을 골라주세요 🙋'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  const guesses={}; let filled=0;
+  app.querySelectorAll('select[data-person]').forEach(s=>{ if(s.value){ guesses[s.dataset.person]=s.value; filled++; }});
+  if(filled===0){ toast('예측을 하나라도 골라주세요 🔮'); return; }
+  if(filled<PEOPLE.length && !confirm(`${PEOPLE.length}명 중 ${filled}명만 예측했어요.\n비워둔 칸은 오답 처리돼요. 이대로 제출할까요?`)) return;
+
+  const btn=$('#submitBtn'); btn.disabled=true; btn.textContent='제출 중…';
+  try{
+    const r = await fetch('/api/submit',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({room:ROOM,name:me,guesses})});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok || !j.ok) throw new Error(j.error||'fail');
+    renderDone(me);
+  }catch(e){
+    btn.disabled=false; btn.textContent='예측 제출하기 ✨';
+    toast('제출에 실패했어요 😢 잠시 후 다시 시도해 주세요');
+  }
+}
+
+function renderDone(me){
+  app.innerHTML = `
+    <div class="brand"><span class="logo">마음배달</span></div>
+    <div class="card done">
+      <div class="big">📮</div>
+      <h1 style="margin:10px 0 6px">제출 완료!</h1>
+      <p class="sub" style="margin:0 0 2px"><b>${esc(me)}</b> 님의 예측이 잘 담겼어요.</p>
+      <p class="sub" style="margin:0 0 18px">정답은 발표 때 공개돼요 🤫</p>
+      <button class="btn ghost" id="again">예측 수정해서 다시 제출</button>
+    </div>
+    <p class="note">같은 이름으로 다시 제출하면 <b>마지막 제출로 갱신</b>돼요.</p>
+  `;
+  $('#again').addEventListener('click', ()=>{ renderSubmit(); window.scrollTo({top:0}); });
+}
+
+/* ---------------- 2) 운영자 : 명단 등록 + 채점 ---------------- */
+function renderAdmin(){
+  const hasRoster = PEOPLE.length>0;
+  const ansRows = hasRoster ? PEOPLE.map((p,i)=>`
+    <label class="field">
+      <span class="who"><span class="dot">${i+1}</span>${esc(p)} 님의 실제 우체부</span>
+      <select data-ans="${esc(p)}">${optionsFor(p)}</select>
+    </label>`).join('') : '';
+
+  app.innerHTML = `
+    <div class="brand"><span class="logo">마음배달</span><span class="logo" style="background:var(--ink)">운영자</span></div>
+    <h1>마니또 운영 🏆</h1>
+    ${roomChip()}
+    <p class="sub">이 방의 <b>참가자 명단</b>을 등록하고, 발표 때 <b>실제 정답</b>을 입력해 채점하세요.<br>정답은 이 화면(브라우저)에만 있고 어디에도 저장되지 않아요.</p>
+
+    <div class="card">
+      <h2>👥 참가자 명단 ${hasRoster?'수정':'등록'}</h2>
+      <p class="hint">한 줄에 한 명씩 <b>닉네임</b>을 적어주세요. (2명 이상)</p>
+      <label class="field">
+        <span class="who">조 이름 (선택)</span>
+        <input class="text" id="roomName" maxlength="40" placeholder="예: 1조 / 스펀지조" value="${esc(ROOM_NAME)}">
+      </label>
+      <label class="field">
+        <span class="who">참가자 (한 줄에 한 명)</span>
+        <textarea id="rosterText" placeholder="배짱&#10;솔라&#10;레미&#10;…">${PEOPLE.map(esc).join('\n')}</textarea>
+      </label>
+      <button class="btn" id="saveRosterBtn">명단 저장 💾</button>
+      <p class="note" style="margin-top:10px">저장하면 참가자들이 바로 예측을 제출할 수 있어요. 명단을 바꾸면 이후 제출부터 반영돼요.</p>
+    </div>
+
+    <div class="card">
+      <h2>🔗 링크 공유</h2>
+      <p class="hint">참가자에게는 <b>참가자 링크</b>를 보내고, <b>운영자 링크</b>는 본인만 사용하세요.</p>
+      <div class="btnrow">
+        <button class="btn ghost" id="copyPart">참가자 링크 복사 📋</button>
+        <button class="btn ghost" id="copyAdmin">운영자 링크 복사 🔒</button>
+      </div>
+    </div>
+
+    ${hasRoster ? `
+    <div class="card">
+      <h2>📥 제출 현황</h2>
+      <p class="hint" id="statusText">불러오는 중…</p>
+      <div id="statusList"></div>
+      <button class="btn ghost" id="refreshBtn" style="margin-top:10px">현황 새로고침 🔄</button>
+    </div>
+
+    <div class="card">
+      <h2>✅ 정답 입력</h2>
+      <p class="hint">각 사람의 <b>실제 우체부</b>를 골라주세요. (서로 겹치지 않아요)</p>
+      ${ansRows}
+      <p class="note" id="dupNote" style="display:none;margin-top:10px"></p>
+    </div>
+
+    <div class="sticky"><button class="btn" id="gradeBtn">채점하기 🎯</button></div>
+    <div id="result"></div>
+    ` : `
+    <p class="note">👆 먼저 <b>참가자 명단</b>을 저장하면 제출 현황·정답 입력·채점이 나타나요.</p>
+    `}
+  `;
+  $('#saveRosterBtn').addEventListener('click', saveRoster);
+  $('#copyPart').addEventListener('click', ()=>copyText(participantURL()));
+  $('#copyAdmin').addEventListener('click', ()=>copyText(adminURL()));
+  if(hasRoster){
+    app.querySelectorAll('select[data-ans]').forEach(s=>{
+      s.addEventListener('change',()=>{ s.classList.toggle('filled', !!s.value); checkDup(); });
+    });
+    $('#gradeBtn').addEventListener('click', grade);
+    $('#refreshBtn').addEventListener('click', loadStatus);
+    loadStatus();
+  }
+}
+
+async function saveRoster(){
+  const roomName = $('#roomName').value.trim().slice(0,40);
+  const raw = $('#rosterText').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const seen=new Set(); const people=[];
+  for(const p of raw){ const s=p.slice(0,40); if(!seen.has(s)){ seen.add(s); people.push(s); } }
+  if(people.length<2){ toast('참가자를 2명 이상 입력해주세요 👥'); return; }
+
+  const btn=$('#saveRosterBtn'); btn.disabled=true; btn.textContent='저장 중…';
+  try{
+    const r = await fetch('/api/roster',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({room:ROOM,name:roomName,people})});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok || !j.ok) throw new Error(j.error||'fail');
+    PEOPLE = j.people||people; ROOM_NAME = j.name||roomName;
+    toast('명단을 저장했어요 ✅');
+    renderAdmin(); window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){
+    btn.disabled=false; btn.textContent='명단 저장 💾';
+    toast('명단 저장에 실패했어요 😢 잠시 후 다시 시도해 주세요');
+  }
+}
+
+function readAnswer(){
+  const a={}; app.querySelectorAll('select[data-ans]').forEach(s=>{ if(s.value) a[s.dataset.person]=s.value; });
+  return a;
+}
+function checkDup(){
+  const vals=Object.values(readAnswer());
+  const dups=[...new Set(vals.filter((v,i)=>vals.indexOf(v)!==i))];
+  const note=$('#dupNote');
+  if(!note) return;
+  if(dups.length){ note.style.display='block'; note.textContent='⚠️ 중복된 우체부: '+dups.join(', ')+' — 실제 배정은 서로 겹치지 않아요. 확인해 주세요.'; }
+  else note.style.display='none';
+}
+
+async function loadStatus(){
+  const t=$('#statusText'), list=$('#statusList');
+  if(!t) return;
+  t.textContent='불러오는 중…'; if(list) list.innerHTML='';
+  try{
+    const j = await (await fetch(`/api/data?room=${encodeURIComponent(ROOM)}`,{cache:'no-store'})).json();
+    const subs = j.submissions||[];
+    t.innerHTML = `지금까지 <b>${j.count||0}명</b> 제출했어요.`;
+    if(list) list.innerHTML = subs.length
+      ? subs.map(s=>`<span class="chip">${esc(s.name)}</span>`).join('')
+      : '<span class="hint">아직 제출자가 없어요.</span>';
+  }catch(e){ t.textContent='현황을 불러오지 못했어요 😢 (새로고침을 눌러보세요)'; }
+}
+
+async function grade(){
+  const answer = readAnswer();
+  const filledAns = Object.keys(answer).length;
+  if(filledAns===0){ toast('정답을 입력해주세요 ✅'); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  if(filledAns<PEOPLE.length && !confirm(`정답 ${PEOPLE.length}개 중 ${filledAns}개만 입력했어요. 이대로 채점할까요?`)) return;
+
+  const btn=$('#gradeBtn'); btn.disabled=true; btn.textContent='채점 중…';
+  try{
+    const j = await (await fetch(`/api/data?room=${encodeURIComponent(ROOM)}`,{cache:'no-store'})).json();
+    const subs = j.submissions||[];
+    const scored = subs.map(s=>{
+      let c=0; for(const p of PEOPLE){ if(answer[p] && s.guesses && s.guesses[p]===answer[p]) c++; }
+      return {name:s.name, score:c};
+    }).sort((a,b)=> b.score-a.score || a.name.localeCompare(b.name,'ko'));
+    renderResult(scored, filledAns, subs.length);
+  }catch(e){ toast('채점에 실패했어요 😢'); }
+  finally{ btn.disabled=false; btn.textContent='채점하기 🎯'; }
+}
+
+function renderResult(scored, totalQ, n){
+  const max = scored.length ? scored[0].score : 0;
+  let lastScore=null, rank=0, shown=0;
+  const rows = scored.map(s=>{
+    shown++;
+    if(s.score!==lastScore){ rank=shown; lastScore=s.score; }
+    const win = s.score===max && max>0;
+    const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':String(rank);
+    return `<div class="rank ${win?'win':''}">
+      <div class="pos">${win?'👑':medal}</div>
+      <div class="nm">${esc(s.name)}</div>
+      <div class="sc"><b>${s.score}</b> / ${totalQ}</div>
+    </div>`;
+  }).join('');
+  const winners = scored.filter(s=>s.score===max && max>0).map(s=>s.name);
+  $('#result').innerHTML = `
+    <div class="card" style="margin-top:16px">
+      <h2>🏆 순위표 <span class="hint" style="font-weight:400;margin:0">· ${n}명 채점</span></h2>
+      ${max>0
+        ? `<p class="hint">🎉 최다 정답 <b>${esc(winners.join(', '))}</b> — ${max} / ${totalQ} 정답!</p>`
+        : `<p class="hint">아직 정답을 맞힌 사람이 없어요.</p>`}
+      ${rows || '<p class="hint">제출자가 없어요.</p>'}
+    </div>`;
+  $('#result').scrollIntoView({behavior:'smooth'});
+}
+
+/* ---------------- 3) 제출 현황 (선택) ---------------- */
+function renderStatus(){
+  app.innerHTML = `
+    <div class="brand"><span class="logo">마음배달</span></div>
+    <h1>제출 현황 📥</h1>
+    ${roomChip()}
+    <p class="sub">이 방에 지금까지 몇 명이 예측을 제출했는지 확인하는 화면이에요.</p>
+    <div class="card">
+      <p class="hint" id="statusText">불러오는 중…</p>
+      <div id="statusList"></div>
+      <button class="btn ghost" id="refreshBtn" style="margin-top:10px">새로고침 🔄</button>
+    </div>
+    <p class="note">참가자 화면은 <b>?room=${esc(ROOM)}</b>, 채점은 <b>&admin=1</b> 을 붙인 주소예요.</p>
+  `;
+  $('#refreshBtn').addEventListener('click', loadStatus);
+  loadStatus();
+}
+
+/* ---------------- 라우터 ---------------- */
+async function boot(){
+  renderLoading();
+  try{
+    const j = await (await fetch(`/api/roster?room=${encodeURIComponent(ROOM)}`,{cache:'no-store'})).json();
+    ROOM_NAME = j && j.name ? j.name : '';
+    PEOPLE = j && Array.isArray(j.people) ? j.people : [];
+  }catch(e){ ROOM_NAME=''; PEOPLE=[]; }
+
+  if(MODE==='admin') return renderAdmin();
+  if(MODE==='status') return renderStatus();
+  if(!PEOPLE.length) return renderNotReady();
+  renderSubmit();
+}
+boot();
+</script>
+</body>
+</html>

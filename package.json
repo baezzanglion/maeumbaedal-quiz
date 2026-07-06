@@ -1,0 +1,10 @@
+{
+  "name": "maeumbaedal-quiz",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "마음배달 · 마니또 추리 대회 (짝꿍 앱)",
+  "dependencies": {
+    "@vercel/blob": "^2.5.0"
+  }
+}
