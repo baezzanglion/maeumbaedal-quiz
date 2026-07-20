@@ -325,7 +325,7 @@ async function saveRoster(){
 }
 
 function readAnswer(){
-  const a={}; app.querySelectorAll('select[data-ans]').forEach(s=>{ if(s.value) a[s.dataset.person]=s.value; });
+  const a={}; app.querySelectorAll('select[data-ans]').forEach(s=>{ if(s.value) a[s.dataset.ans]=s.value; });
   return a;
 }
 function checkDup(){
